@@ -1,0 +1,4 @@
+promtail_version: v1.2.0
+promtail_url: https://github.com/grafana/loki/releases/download/{{ promtail_version }}/promtail-linux-amd64.zip
+promtail_http_port: 9080
+promtail_grpc_port: 0

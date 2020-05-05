@@ -1,0 +1,8 @@
+[Unit]
+Description=Promtail
+Documentation=https://github.com/grafana/loki
+
+[Service]
+ExecStart=/opt/promtail/promtail-linux-amd64 -config.file /opt/promtail/config.yaml
+
+[Install]

@@ -1,0 +1,69 @@
+---
+  
+- name: Install Prerequisites
+  package:
+    name: unzip
+    
+- name: Create Promtail User
+  user:
+    name: promtail
+    system: true
+    
+- name: Create Promtail Directory
+  file:
+    path: /opt/promtail
+    owner: promtail
+    group: promtail
+    state: directory
+    
+- name: Download Promtail Binary
+  unarchive:
+    src: "{{ promtail_url }}"
+    dest: /opt/promtail
+    owner: promtail
+    remote_src: yes
+
+- name: Deploy Promtail SystemD Unit file
+  template:
+    src: promtail.service.j2
+    dest: /usr/lib/systemd/system/promtail.service
+    owner: root
+    group: root
+    mode: 0644
+  register: promtail_service
+  
+
+- name: Deploy Promtail Config
+  template:
+    src: config.yaml.j2
+    dest: /opt/promtail/config.yaml
+    owner: promtail
+    group: root
+    mode: 0644
+  register: promtail_config
+  
+- name: Reload Systemd if Necessary
+  systemd:
+    daemon_reload: yes
+  when: promtail_service.changed
+  
+- name: Restart Promtail if Necessary
+  service:
+    name: promtail
+    state: restarted
+  when: promtail_service.changed or promtail_config.changed
+  
+
+- name: Ensure Promtail HTTP Port is Open on Firewall
+  firewalld:
+    port: "{{ promtail_http_port }}/tcp"
+    zone: public
+    permanent: yes
+    immediate: yes
+    state: enabled    
+
+- name: Ensure Promtail is Enabled
+  service:
+    name: promtail
+    state: started
+    enabled: yes

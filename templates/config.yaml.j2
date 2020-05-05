@@ -1,0 +1,38 @@
+# Promtail Server Config
+server:
+  http_listen_port: {{ promtail_http_port }}
+  grpc_listen_port: {{ promtail_grpc_port }}
+
+# Positions
+positions:
+  filename: /tmp/positions.yaml
+
+# Loki Server URL
+clients:
+  - url: {{ loki_url }}
+
+scrape_configs:
+  - job_name: syslog
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          host: {{ inventory_hostname }}
+          __path__: /var/log/messages
+  - job_name: dmesg
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: dmesg
+          host: {{ inventory_hostname }}
+          __path__: /var/log/dmesg
+  - job_name: secure
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: secure
+          host: {{ inventory_hostname }}
+          __path__: /var/log/secure
