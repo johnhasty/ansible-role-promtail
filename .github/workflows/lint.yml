@@ -11,7 +11,7 @@ jobs:
     # Important: This sets up your GITHUB_WORKSPACE environment variable
     - uses: actions/checkout@v2
 
-    - name: Lint Ansible Playbook
+    - name: Run Ansible-Lint
       # replace "master" with any valid ref
       uses: ansible/ansible-lint-action@master
       with:
