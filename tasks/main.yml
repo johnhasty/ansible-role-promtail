@@ -55,7 +55,7 @@
   service:
     name: promtail
     state: restarted
-  when: promtail_service.changed or promtail_config.changed
+  when: (promtail_service.changed or promtail_config.changed) and not iscontainerfile.stat.exists
   
 
 - name: Ensure Promtail HTTP Port is Open on Firewall
@@ -71,3 +71,4 @@
     name: promtail
     state: started
     enabled: yes
+  when: not iscontainerfile.stat.exists
