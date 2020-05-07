@@ -65,7 +65,8 @@
     permanent: yes
     immediate: yes
     state: enabled    
-
+  when: not iscontainerfile.stat.exists
+  
 - name: Ensure Promtail is Enabled
   service:
     name: promtail
